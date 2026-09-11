@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analyse — Agrifood — 11/09/2026</title>
+<style>
+  :root {
+    --bg: #f4f5f2;
+    --card-bg: #ffffff;
+    --border: #e0e0dc;
+    --text: #1f2420;
+    --text-muted: #6b7269;
+    --green-bg: #e8f5ea;
+    --green-text: #1e7b34;
+    --red-bg: #fbeaea;
+    --red-text: #b3261e;
+    --gray-bg: #eef0ee;
+    --gray-text: #55605a;
+    --accent: #2f5d3c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  header.top {
+    text-align: center;
+    margin-bottom: 36px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  header.top h1 {
+    margin: 0 0 10px;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+
+  header.top .subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  header.top .subtitle span {
+    display: inline-block;
+    margin: 0 8px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 26px;
+    margin-bottom: 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+  }
+
+  .card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .ticker {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: default;
+    white-space: nowrap;
+  }
+
+  .badge.high { background: var(--green-bg); color: var(--green-text); }
+  .badge.medium { background: #fff4e0; color: #9a6400; }
+  .badge.low { background: var(--red-bg); color: var(--red-text); }
+
+  .badge-reason {
+    display: block;
+    margin-top: 4px;
+    font-size: 11px;
+    font-weight: 400;
+    text-transform: none;
+    color: var(--text-muted);
+    letter-spacing: normal;
+    max-width: 220px;
+    text-align: right;
+  }
+
+  .meta-line {
+    color: var(--text-muted);
+    font-size: 13.5px;
+    margin: 8px 0 18px;
+  }
+
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .metric {
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: var(--gray-bg);
+    color: var(--gray-text);
+  }
+
+  .metric.green { background: var(--green-bg); color: var(--green-text); }
+  .metric.red { background: var(--red-bg); color: var(--red-text); }
+
+  .metric .label {
+    display: block;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+    margin-bottom: 3px;
+  }
+
+  .metric .value {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 18px;
+  }
+
+  .col h3 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    margin: 0 0 8px;
+  }
+
+  .col ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  .col li {
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  .col.positive li::marker { color: var(--green-text); }
+  .col.negative li::marker { color: var(--red-text); }
+
+  .risk-box {
+    background: #fdf6e8;
+    border: 1px solid #f0dfb3;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+
+  .risk-box strong {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #8a6a10;
+    margin-bottom: 4px;
+  }
+
+  .watch h3, .news h3 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    margin: 0 0 8px;
+  }
+
+  .watch ul {
+    margin: 0 0 18px;
+    padding-left: 18px;
+  }
+
+  .watch li {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .news { margin-top: 4px; }
+
+  .news-item {
+    border-top: 1px solid var(--border);
+    padding: 12px 0;
+  }
+
+  .news-item:first-of-type { border-top: none; padding-top: 4px; }
+
+  .news-item a {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 14.5px;
+    text-decoration: none;
+  }
+
+  .news-item a:hover { text-decoration: underline; }
+
+  .news-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 3px 0 5px;
+  }
+
+  .news-impact {
+    font-size: 13.5px;
+    margin: 0;
+  }
+
+  footer.note {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 30px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  @media print {
+    body { background: #fff; }
+    .card {
+      box-shadow: none;
+      border: 1px solid #ccc;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .page { max-width: 100%; padding: 10px 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="top">
+    <h1>Analyse — Agrifood</h1>
+    <div class="subtitle">
+      <span>Date du jour : 11/09/2026</span>
+      <span>·</span>
+      <span>Période des métriques : 1 an</span>
+      <span>·</span>
+      <span>2 entreprises analysées</span>
+    </div>
+  </header>
+
+  <!-- MNST -->
+  <section class="card">
+    <div class="card-head">
+      <div class="ticker">MNST</div>
+      <div class="badge medium" title="Métriques solides mais signal court terme (MACD baissier, RSI proche de survendu) en décalage avec les nouvelles récentes majoritairement positives.">
+        Confiance : medium
+      </div>
+    </div>
+    <div class="meta-line">Consumer Defensive — Beverages · Non-Alcoholic · boissons énergisantes premium</div>
+
+    <div class="metrics">
+      <div class="metric gray"><span class="label">Prix</span><span class="value">43.21 USD</span></div>
+      <div class="metric green"><span class="label">Perf 1y</span><span class="value">+35.44%</span></div>
+      <div class="metric red"><span class="label">PER</span><span class="value">40.0</span></div>
+      <div class="metric gray"><span class="label">RSI</span><span class="value">33.06 (Neutre)</span></div>
+      <div class="metric green"><span class="label">Trend</span><span class="value">Uptrend</span></div>
+      <div class="metric green"><span class="label">Debt/Equity</span><span class="value">0.99%</span></div>
+    </div>
+
+    <div class="columns">
+      <div class="col positive">
+        <h3>Points positifs</h3>
+        <ul>
+          <li>Performance sur 1 an de +35.44%, avec un prix se situant à 62.56% de son range 52 semaines (tendance haussière confirmée).</li>
+          <li>Bilan quasiment sans dette (Debt-to-Equity de 0.99%) et beta faible (0.52), signe d'une volatilité relative au marché contenue.</li>
+          <li>Résultats du T2 2026 (publiés le 7 août) supérieurs aux attentes, avec des ventes nettes record dépassant 2,5 Md$ et une croissance internationale de +34.6%.</li>
+        </ul>
+      </div>
+      <div class="col negative">
+        <h3>Points négatifs</h3>
+        <ul>
+          <li>Valorisation élevée : PER de 40.0 (Fwd PER 33.0), signalant des attentes de croissance déjà largement intégrées dans le cours.</li>
+          <li>MACD Bearish alors que le RSI (33.06) se rapproche de la zone de survente : signal de momentum court terme qui contraste avec la tendance haussière de fond.</li>
+          <li>Aucun dividende versé (Div Yield indisponible).</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="risk-box">
+      <strong>Risque principal</strong>
+      La compression de marge observée au T2 2026 (coûts de distribution et de marketing en hausse) pourrait peser sur la rentabilité si l'expansion internationale continue de croître plus vite que la maîtrise des coûts.
+    </div>
+
+    <div class="news">
+      <h3>Actualités</h3>
+      <div class="news-item">
+        <a href="https://www.globenewswire.com/news-release/2026/07/08/3324442/10193/en/Monster-Beverage-Declares-Two-for-One-Stock-Split.html" target="_blank" rel="noopener">Monster Beverage Declares Two-for-One Stock Split</a>
+        <div class="news-meta">GlobeNewswire · 8 juillet 2026</div>
+        <p class="news-impact">Le conseil d'administration approuve une division du titre par deux (dividende en actions de 100%), avec un début de cotation ajustée le 11 août 2026 — une opération visant à améliorer la liquidité du titre sans changer les fondamentaux.</p>
+      </div>
+      <div class="news-item">
+        <a href="https://finance.yahoo.com/markets/stocks/articles/monster-beverage-beats-q2-earnings-164300309.html" target="_blank" rel="noopener">Monster Beverage Beats Q2 Earnings on Broad-Based Sales Growth</a>
+        <div class="news-meta">Yahoo Finance · 7-8 août 2026</div>
+        <p class="news-impact">Le bénéfice ajusté et les ventes du T2 2026 dépassent le consensus, portés par une croissance à deux chiffres sur toutes les zones géographiques, confirmant la dynamique commerciale malgré la pression sur les marges.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- KO -->
+  <section class="card">
+    <div class="card-head">
+      <div class="ticker">KO</div>
+      <div class="badge high" title="Métriques et actualités convergent : performance solide, dividende en hausse, proximité des plus hauts 52 semaines confirmée par les analystes.">
+        Confiance : high
+      </div>
+    </div>
+    <div class="meta-line">Consumer Defensive — Beverages · Non-Alcoholic · boissons gazeuses et non-alcoolisées</div>
+
+    <div class="metrics">
+      <div class="metric gray"><span class="label">Prix</span><span class="value">88.24 USD</span></div>
+      <div class="metric green"><span class="label">Perf 1y</span><span class="value">+34.19%</span></div>
+      <div class="metric gray"><span class="label">PER</span><span class="value">26.5</span></div>
+      <div class="metric gray"><span class="label">RSI</span><span class="value">51.27 (Neutre)</span></div>
+      <div class="metric green"><span class="label">Trend</span><span class="value">Uptrend</span></div>
+      <div class="metric red"><span class="label">Debt/Equity</span><span class="value">115.52%</span></div>
+    </div>
+
+    <div class="columns">
+      <div class="col positive">
+        <h3>Points positifs</h3>
+        <ul>
+          <li>Performance sur 1 an de +34.19%, prix à 86.43% de son range 52 semaines, proche des plus hauts.</li>
+          <li>Dividende en hausse pour la 64e année consécutive, à 0.53 USD par trimestre (2.4% de rendement), ex-date le 15 septembre 2026.</li>
+          <li>Beta faible (0.34) et volatilité annualisée modérée (17.93%), profil défensif cohérent avec le secteur Consumer Defensive.</li>
+        </ul>
+      </div>
+      <div class="col negative">
+        <h3>Points négatifs</h3>
+        <ul>
+          <li>Endettement élevé : Debt-to-Equity de 115.52%.</li>
+          <li>MACD Bearish malgré la tendance haussière de fond : signal de momentum court terme à surveiller alors que le titre est proche de ses plus hauts.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="risk-box">
+      <strong>Risque principal</strong>
+      Le titre se traite proche de ses plus hauts 52 semaines avec un momentum court terme baissier (MACD) et un endettement élevé, ce qui laisse peu de marge en cas de déception sur les résultats à venir.
+    </div>
+
+    <div class="watch">
+      <h3>À surveiller</h3>
+      <ul>
+        <li>Date ex-dividende le 15 septembre 2026 (paiement le 1er octobre 2026).</li>
+      </ul>
+    </div>
+
+    <div class="news">
+      <h3>Actualités</h3>
+      <div class="news-item">
+        <a href="https://www.cnbc.com/2026/08/22/coca-cola-innovation-labs-dirty-sodas-refreshers.html" target="_blank" rel="noopener">Inside Coca-Cola's secretive innovation labs: How the beverage giant wants to automate dirty soda and refreshers</a>
+        <div class="news-meta">CNBC · 22 août 2026</div>
+        <p class="news-impact">Coca-Cola développe de nouveaux équipements de distribution automatisée (Freestyle) pour élargir son offre de boissons personnalisables, un axe d'innovation destiné à soutenir la croissance dans la restauration.</p>
+      </div>
+      <div class="news-item">
+        <a href="https://247wallst.com/personal-finance/2026/09/08/a-67-year-old-retiree-just-watched-coca-cola-raise-its-dividend-for-the-64th-year-in-a-row-here-is-what-that-payout-is-really-worth-today/" target="_blank" rel="noopener">A 67-Year-Old Retiree Just Watched Coca-Cola Raise Its Dividend for the 64th Year in a Row</a>
+        <div class="news-meta">24/7 Wall St · 8 septembre 2026</div>
+        <p class="news-impact">L'article revient sur la 64e augmentation annuelle consécutive du dividende (porté à 0.53 USD/trimestre en février 2026) et sa valeur réelle pour les investisseurs orientés revenu.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="note">
+    Analyse éducative construite à partir de données publiques, ne constitue pas un conseil financier.
+  </footer>
+
+</div>
+</body>
+</html>
